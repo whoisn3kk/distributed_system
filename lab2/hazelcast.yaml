@@ -1,0 +1,21 @@
+hazelcast:
+  cluster-name: "dev"
+  network:
+    # public-address можно задать для внешнего подключения Management Center (см. пункт 3)
+    public-address: "host.docker.internal:5701"
+    join:
+      multicast:
+        enabled: false
+      tcp-ip:
+        enabled: true
+        member-list:
+          - "hazelcast-node-1:5701"
+          - "hazelcast-node-2:5701"
+          - "hazelcast-node-3:5701"
+  cp-subsystem:
+    cp-member-count: 3
+    group-size: 3
+    session-time-to-live-seconds: 5
+    session-heartbeat-interval-seconds: 1
+    missing-cp-member-auto-removal-seconds: 14400
+    fail-on-indeterminate-operation-state: true

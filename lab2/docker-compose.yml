@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  hazelcast-node-1:
+    image: hazelcast/hazelcast:5.3.6
+    environment:
+      - JAVA_OPTS=-Dhazelcast.config=/opt/hazelcast/config/hazelcast-docker.xml -Dhazelcast.public.address=host.docker.internal:5701
+    volumes:
+      - ./hazelcast-docker.xml:/opt/hazelcast/config/hazelcast-docker.xml
+    ports:
+      - "5701:5701"
+    networks:
+      - hazelcast_network
+
+  hazelcast-node-2:
+    image: hazelcast/hazelcast:5.3.6
+    environment:
+      - JAVA_OPTS=-Dhazelcast.config=/opt/hazelcast/config/hazelcast-docker.xml -Dhazelcast.public.address=host.docker.internal:5702
+    volumes:
+      - ./hazelcast-docker.xml:/opt/hazelcast/config/hazelcast-docker.xml
+    ports:
+      - "5702:5701"
+    networks:
+      - hazelcast_network
+
+  hazelcast-node-3:
+    image: hazelcast/hazelcast:5.3.6
+    environment:
+      - JAVA_OPTS=-Dhazelcast.config=/opt/hazelcast/config/hazelcast-docker.xml -Dhazelcast.public.address=host.docker.internal:5703
+    volumes:
+      - ./hazelcast-docker.xml:/opt/hazelcast/config/hazelcast-docker.xml
+    ports:
+      - "5703:5701"
+    networks:
+      - hazelcast_network
+
+  hazelcast-mancenter:
+    image: hazelcast/management-center:5.3
+    ports:
+      - "8080:8080"
+    environment:
+      - HZ_ENDPOINTS=host.docker.internal:5701,host.docker.internal:5702,host.docker.internal:5703
+    networks:
+      - hazelcast_network
+
+networks:
+  hazelcast_network:
+    driver: bridge
