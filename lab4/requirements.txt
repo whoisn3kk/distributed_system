@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+requests
+tenacity
+grpcio
+grpcio-tools
+hazelcast-python-client
+kafka-python
+python-json-logger
