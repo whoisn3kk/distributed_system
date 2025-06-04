@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  master:
+    build: ./master
+    container_name: master_i2_fastapi
+    ports:
+      - "5000:5000" 
+    environment:
+      - SECONDARY_URLS=http://secondary1:5001,http://secondary2:5002,http://secondary3:5003
+    logging: &logging_config
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  secondary1:
+    build: ./secondary
+    container_name: secondary1_i2_fastapi
+    ports:
+      - "5001:5001" 
+    environment:
+      - APP_PORT=5001
+      - ARTIFICIAL_DELAY=1
+      - HOSTNAME=secondary1 
+    depends_on:
+      - master
+    logging: *logging_config
+
+  secondary2:
+    build: ./secondary
+    container_name: secondary2_i2_fastapi
+    ports:
+      - "5002:5002"
+    environment:
+      - APP_PORT=5002
+      - ARTIFICIAL_DELAY=3
+      - HOSTNAME=secondary2
+    depends_on:
+      - master
+    logging: *logging_config
+
+  secondary3:
+    build: ./secondary
+    container_name: secondary3_i2_fastapi
+    ports:
+      - "5003:5003"
+    environment:
+      - APP_PORT=5003
+      - ARTIFICIAL_DELAY=0
+      - HOSTNAME=secondary3
+    depends_on:
+      - master
+    logging: *logging_config

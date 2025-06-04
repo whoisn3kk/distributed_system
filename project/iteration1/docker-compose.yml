@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  master:
+    build: ./master
+    container_name: master_i1_fastapi
+    ports:
+      - "5000:5000" # Зовнішній порт:Внутрішній порт контейнера (де працює Uvicorn)
+    environment:
+      # URL вторинних серверів, які Майстер буде використовувати для реплікації
+      - SECONDARY_URLS=http://secondary1:5001,http://secondary2:5002 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  secondary1:
+    build: ./secondary
+    container_name: secondary1_i1_fastapi
+    ports:
+      - "5001:5001" 
+    environment:
+      - APP_PORT=5001 # Uvicorn всередині контейнера слухатиме цей порт
+      - ARTIFICIAL_DELAY=2 # Затримка 2 секунди
+      - HOSTNAME=secondary1 
+    depends_on:
+      - master
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  secondary2:
+    build: ./secondary
+    container_name: secondary2_i1_fastapi
+    ports:
+      - "5002:5002"
+    environment:
+      - APP_PORT=5002 # Uvicorn всередині контейнера слухатиме цей порт
+      - ARTIFICIAL_DELAY=5 # Затримка 5 секунд
+      - HOSTNAME=secondary2
+    depends_on:
+      - master
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
