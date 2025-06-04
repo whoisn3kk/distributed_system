@@ -1,0 +1,15 @@
+{
+    "logging-service": {
+        "addresses": [
+            "localhost:50051",
+            "localhost:50052",
+            "localhost:50053"
+        ]
+    },
+    "messages-service": {
+        "addresses": [
+            "localhost:8003",
+            "localhost:8004"
+        ]
+    }
+}
